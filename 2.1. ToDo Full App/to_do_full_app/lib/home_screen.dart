@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:to_do_full_app/todo.dart';
 import 'package:to_do_full_app/update_task_modal.dart';
 import 'add_new_task_modal.dart';
 
@@ -10,6 +12,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  List<Todo> todoList = [];
 
 
   @override
@@ -24,15 +28,24 @@ class _HomeScreenState extends State<HomeScreen> {
           showModalBottomSheet(
               context: context,
               builder: (context) {
-                return AddNewTaskMoadal();
+                return AddNewTaskMoadal(
+                  onAddTap: (Todo task){
+                    addTodo(task);
+                  },
+                );
               });
         },
         child: Icon(Icons.add),
       ),
       body: ListView.builder(
-          itemCount: 5,
+          itemCount: todoList.length,
           itemBuilder: (context, index) {
+
+            final Todo todo = todoList[index];
+            final String formatedDate = DateFormat('MM-dd-yy  hh:mm:ss a ').format(todo.createdDateTime);
+
             return ListTile(
+              tileColor: todo.status == 'done'? Colors.black12 : null,
               onTap: () {
                 showDialog(
                     context: context,
@@ -53,7 +66,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 showModalBottomSheet(
                                     context: context,
                                     builder: (context) {
-                                      return UpdateTaskModal();
+                                      return UpdateTodoModal(
+                                        todo: todo,
+                                        onTodoUpdate: (String updatedDetailsText){
+                                          updateTodo(index, updatedDetailsText);
+                                          Navigator.pop(context);
+                                        },
+                                      );
                                     });
                               },
                             ),
@@ -62,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               leading: Icon(Icons.delete),
                               onTap: () {
                                 Navigator.pop(context);
-                                //delete
+                                deleteTodo(index);
                               },
                             )
                           ],
@@ -70,14 +89,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     });
               },
+              //for status
+              onLongPress: (){
+                String currentStatus = todo.status == 'pending'? 'done' : 'pending';
+                updateTodoStatus(index, currentStatus);
+
+              },
               leading: CircleAvatar(
                 child: Text('${index + 1}'),
               ),
-              title: const Text('Image'),
-              subtitle: const Text('date'),
-              trailing: const Text('pending'),
+              title: Text(todo.taskDetails),
+              subtitle: Text(formatedDate),
+              trailing: Text(todo.status.toUpperCase()),
             );
           }),
     );
   }
+
+  void addTodo(Todo task) {
+    todoList.add(task);
+    setState(() {});
+  }
+
+  void deleteTodo(int index){
+    todoList.removeAt(index);
+    setState(() {});
+  }
+
+  void updateTodo(int index, String todoDetails){
+    todoList[index].taskDetails = todoDetails;
+    setState(() {});
+  }
+
+  void updateTodoStatus(int index, String status){
+    todoList[index].status = status;
+    setState(() {});
+  }
 }
+
+
