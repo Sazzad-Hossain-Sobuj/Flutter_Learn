@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:task_manager_project_rafat/ui/ui_screens/main_bottom_navbar_screen.dart';
 import 'package:task_manager_project_rafat/ui/ui_screens/sign_up_screen.dart';
 
 import '../ui_widgets/body_background.dart';
@@ -56,7 +57,9 @@ class _LogInScreenState extends State<LogInScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>MainBottomNavScreen()));
+                      },
                       child: const Icon(Icons.arrow_circle_right_outlined),
                     ),
                   ),

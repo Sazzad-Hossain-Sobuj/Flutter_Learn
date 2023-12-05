@@ -46,6 +46,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       hintText: 'Password',
                     ),
                   ),
+                  SizedBox(height: 5,),
                   TextFormField(
                     decoration: const InputDecoration(
                       hintText: 'Confirm Password',
